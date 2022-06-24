@@ -1,0 +1,11 @@
+# settings
+
+(GimpGegl-gimp-posterize-config "2022-06-13 18:41:15"
+    (time 1655138475)
+    (gimp-opacity 0)
+    (levels 3))
+(GimpGegl-gimp-posterize-config "2022-06-13 16:46:36"
+    (time 1655131596)
+    (levels 3))
+
+# end of settings

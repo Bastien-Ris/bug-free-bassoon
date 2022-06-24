@@ -1,0 +1,10 @@
+# GIMP gimp-convolve-tool options
+
+(brush "Clipboard Mask")
+(dynamics "Dynamics Off")
+(palette "Color History")
+(brush-size 8)
+(brush-angle 0.50000000000000311)
+(brush-spacing 0.20000000000000001)
+
+# end of gimp-convolve-tool options

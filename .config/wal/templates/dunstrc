@@ -1,0 +1,12 @@
+# Set the background and foreground (text) color for all notifications
+[urgency_low]
+    background = "{background}"
+    foreground = "{foreground}"
+
+[urgency_normal]
+    background = "{color9}"
+    foreground = "{foreground}"
+
+[urgency_critical]
+    background = "{color10}"
+    foreground = "{foreground}"

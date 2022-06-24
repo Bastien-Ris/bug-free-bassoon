@@ -1,0 +1,11 @@
+# GIMP gimp-pencil-tool options
+
+(brush "Clipboard Mask")
+(dynamics "Dynamics Off")
+(gradient "FG to BG (RGB)")
+(palette "Color History")
+(brush-size 8)
+(brush-angle 0.50000000000000311)
+(brush-spacing 0.20000000000000001)
+
+# end of gimp-pencil-tool options

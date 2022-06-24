@@ -1,0 +1,274 @@
+
+##############################################
+##|  _ \_ _/ ___||  _ \| |      / \\ \ / /  ##
+##| | | | |\___ \| |_) | |     / _ \\ V /   ##
+##| |_| | | ___) |  __/| |___ / ___ \| |    ##
+##|____/___|____/|_|   |_____/_/   \_\_|    ##
+##############################################
+
+from typing import List  # noqa: F401
+
+from libqtile import bar, layout, widget, qtile, extension
+from libqtile.config import Click, Drag, Group, Screen, Match
+from libqtile.lazy import lazy
+from libqtile.command import lazy
+#from libqtile.utils import guess_terminal
+import os
+import subprocess
+
+#The following lines define a color theme depending on Pywal, then general appearances
+
+colors = []
+cache='/home/bastien/.cache/wal/colors'
+def load_colors(cache):
+    with open(cache, 'r') as file:
+        for i in range(8):
+            colors.append(file.readline().strip())
+    colors.append('#ffffff')
+    lazy.reload()
+load_colors(cache)
+    
+transparent_color = '#00000000'
+general_background_color = colors[0]
+general_font_color = colors[8]
+active_font_color = colors[0]
+general_border_color = colors[2]
+general_focus_color = colors[4]
+floating_border_color = colors[7]
+floating_focus_color = colors[5]
+
+#### these inits are defined here but used in config.py and screen.py
+
+def init_layout_theme():
+	return {"margin":4,
+			"border_width":4,
+			"border_focus":general_focus_color,
+			"border_normal":general_border_color,
+            }
+layout_theme = init_layout_theme()
+
+
+def init_floating_layout_theme():
+	return {"margin":4,
+			"border_width":4,
+			"border_focus":floating_focus_color,
+			"border_normal":floating_border_color,
+			}
+floating_layout_theme = init_floating_layout_theme()
+
+def init_menu_theme():
+	return {"dmenu_lines":12,
+			"background":general_background_color,
+		    "foreground":general_font_color,
+			"selected_background":general_focus_color,
+			"font":'Luxi Mono Regular',
+			"fontsize":12,
+			"dmenu_prompt":'>>',
+			"dmenu_ignorecase":True				
+			}			
+menu_theme = init_menu_theme()
+
+## here start the display
+
+widget_defaults = dict(
+    font='Luxi Mono Regular',
+    fontsize=12,
+    padding=8,
+    margin=8,
+    foreground=general_font_color
+)
+extension_defaults = widget_defaults.copy()
+
+panel_height=24
+
+
+
+def powerline_arrow(direction, color1, color2):
+    if direction == "r":
+        return [
+            widget.Sep(padding=0, linewidth=0, background=color2),
+            widget.TextBox(
+				font='PowerlineSymbols',
+                text=u"\ue0b0",
+                padding=-1,
+                foreground=color1,
+                background=color2,
+                fontsize=panel_height,
+            ),
+        ]
+    else:
+        return [
+            widget.TextBox(
+				font='PowerlineSymbols',
+                text=u"\ue0b2",
+                foreground=color2,
+                padding=-1,
+                background=color1,
+                fontsize=panel_height,),
+            widget.Sep(padding=0, linewidth=0, background=color1),
+        ]
+
+
+
+screens = [
+    Screen(
+        top=bar.Bar(
+            [
+                 
+                widget.Image(filename='~/.config/qtile/python-icon.png',
+					mouse_callbacks= {'Button1': lazy.spawn('rofi -show drun'),
+                    'Button2': lazy.spawn("kitty"),   
+                   'Button3': lazy.run_extension(extension.DmenuRun(**menu_theme))},
+					background=colors[2],
+					),	
+                #*powerline_arrow("r", colors[2], colors[3]),            
+
+                #widget.Image(filename='~/.config/qtile/prompt-icon.png',
+				#	mouse_callbacks= {'Button1': lazy.spawn("kitty")}, 
+				#background=colors[2]), 
+				widget.TextBox(text='start',
+					mouse_callbacks= {'Button1': lazy.spawn('kitty'),
+                        'Button3': lazy.run_extension(extension.DmenuRun(**menu_theme))},
+					background=colors[2],
+					),
+                widget.Prompt(prompt="$ => ", background=colors[2]),
+				*powerline_arrow("r", colors[2], colors[3]),
+
+                widget.Image(filename='~/.config/qtile/icon_wallpaper.png',
+					mouse_callbacks= {'Button1': lazy.spawn("/home/bastien/.config/qtile/change_theme.sh")}, 
+				background=colors[3]), 
+				widget.TextBox(text='theme',
+					mouse_callbacks= {'Button1': lazy.spawn("/home/bastien/.config/qtile/change_theme.sh")},
+				background=colors[3],
+					),
+				*powerline_arrow("r", colors[3], colors[4]),
+               
+                widget.CurrentLayoutIcon(background=colors[4],
+                    scale=0.8,
+				    ),
+				widget.CurrentLayout(background=colors[4],
+					fmt= '{}'
+				    ), 
+                *powerline_arrow("r", colors[4], colors[5]),
+                
+				widget.Image(filename='~/.config/qtile/keyboard_alt.png',
+				    mouse_callbacks= {'Button1': lazy.spawn("kitty -e vim /home/bastien/.config/qtile/keys.py")}, 
+					background=colors[5]), 
+                widget.Clipboard(
+					fmt='Clipboard: {}...',
+					fontsize=11,
+					foreground=general_font_color,
+					background=colors[5],
+					max_width=50,
+					timeout=None, 
+					mouse_callbacks={'Button1':lazy.spawn('xclip -selection clipboard blank')}),                               
+       				*powerline_arrow("r", colors[5],colors[6]),
+                               #widget.Spacer(background=transparent_color),	
+                 
+
+                widget.GroupBox(
+					active=active_font_color,
+					inactive=general_font_color,
+					rounded=True,
+					this_screen_border=general_border_color,
+					this_current_screen_border=general_focus_color,
+					urgent_border=floating_border_color,
+					urgent_text=floating_focus_color,
+					background=colors[6],
+					),
+        	    *powerline_arrow("r", colors[6], transparent_color),
+                widget.TaskList(
+                    background=transparent_color,
+                    foreground=general_font_color,
+                    highlight_method='block',
+					border=general_focus_color,
+					urgent_border=floating_focus_color,
+					max_title_width=96,
+					rounded=True,
+					markup=True,
+					markup_minimized="<b>{}</b>"),
+                #*powerline_arrow("r", colors[7],transparent_color),
+                widget.Spacer(background=transparent_color),
+
+                widget.Chord(
+                    fmt= '{} mode',
+                    fontsize = 15,
+                    chords_colors={
+                        'layout': (general_background_color, colors[7]),
+                        'launcher': (general_background_color, colors[5]),
+                        'silent': (general_background_color, colors[3]),
+                        'firefox': (general_background_color, colors[2]),
+                        'web': (general_background_color, colors[4]),
+                        }
+                    ),
+
+
+                widget.Spacer(background=transparent_color),
+                widget.Systray(), 
+                
+                *powerline_arrow("l",  transparent_color, colors[6]),
+                widget.Memory(format='RAM: {MemUsed: .0f}{mm} {MemPercent: .1f}%',
+					mouse_callbacks= {'Button1': lazy.spawn("kitty -e 'htop'")},
+					background=colors[6]
+                    ),
+				
+                *powerline_arrow("l",  colors[6], colors[5]),	
+				widget.CPU(format='CPU: {load_percent}%  ', 
+					mouse_callbacks={'Button1':lazy.spawn('kitty -e bpytop')},
+					foreground=general_font_color,
+                    background=colors[5],
+                    ),
+                widget.ThermalSensor(
+					tag_sensor='Package id 0',
+					mouse_callbacks={'Button1':lazy.spawn('kitty -e bpytop')},
+					foreground=general_font_color,
+					background=colors[5],
+                    ),
+				
+                *powerline_arrow("l",  colors[5], colors[4]),
+				widget.DF(partition="/home", 
+					visible_on_warn=False, 
+					format='home: {uf}{m}', 
+					mouse_callbacks={'Button1':lazy.spawn('pcmanfm'), 'Button3':lazy.spawn('kitty -e vifm')},
+					background=colors[4]
+                    ),
+                widget.DF(partition="/", 
+					visible_on_warn=False, 
+					format='sys: {uf}{m}', 
+					mouse_callbacks={'Button1':lazy.spawn('pcmanfm'), 'Button3':lazy.spawn('kitty -e vifm')},
+					background=colors[4]
+                    ), 
+                widget.DF(partition="/hdd", 
+					visible_on_warn=False, 
+					format='back: {uf}{m}', 
+					mouse_callbacks={'Button1':lazy.spawn('pcmanfm'), 'Button3':lazy.spawn('kitty -e vifm')},
+					background=colors[4]
+                    ),
+                
+               *powerline_arrow("l",  colors[4], colors[3]),
+				widget.Clock(format="%A %d %b %H:%M",
+                        background=colors[3], 
+                        padding=4, mouse_callbacks={'Button1':lazy.spawn('thunderbird -calendar')}),
+                
+                *powerline_arrow("l",  colors[3], colors[2]),
+                #widget.TextBox(text='power',
+                #        mouse_callbacks= {'Button1': lazy.spawn('rofi -show power-menu -modi "power-menu:rofi-power-menu --choices=shutdown/reboot/logout/lockscreen"')},
+                #    background=colors[2],
+                #    ),
+                widget.Image(filename='~/.config/qtile/power-icon.png',
+                    mouse_callbacks= {'Button1': lazy.spawn('rofi -show power-menu -modi "power-menu:rofi-power-menu --choices=shutdown/reboot/logout/lockscreen"')},
+                    background=colors[2],
+                    ),
+                #*powerline_arrow("r", colors[2], transparent_color),
+
+
+                ],
+            panel_height,
+            opacity=1,
+            border_width=0,
+            margin=[4, 4, 2, 4],
+            border_color=general_background_color,
+            background=transparent_color,
+		),
+	),
+]

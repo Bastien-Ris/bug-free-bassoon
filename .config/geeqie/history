@@ -1,0 +1,31 @@
+#History lists
+
+[shortcuts]
+".[path](null)"
+"Home[path]/home/bastien"
+"Desktop[path]/home/bastien/Desktop"
+"Collections[path]/home/bastien/.local/share/geeqie/collections"
+"Wallpapers[path]/home/bastien/Pictures/Wallpapers"
+
+[path_list]
+"/hdd/bastien.arch/Documents/Samsung A50"
+"/home/bastien/Pictures/wallpapers-master"
+"/home/bastien/Pictures/Screenshots"
+"/home/bastien/Pictures/Gentoo-Wallpapers"
+"/home/bastien/Pictures"
+"/home/bastien/Pictures/Wallpapers"
+"/usr/share/icons/Tela-circle/32/devices"
+"/usr/share/icons/Adwaita/16x16/legacy"
+"/home/bastien/Pictures/ArchlinuxWallpaper"
+"/home/bastien"
+
+[bookmarks]
+".[path]/usr/share/icons/Tela-circle/32/devices"
+"Home[path]/home/bastien"
+"Desktop[path]/home/bastien/Desktop"
+"Collections[path]/home/bastien/.local/share/geeqie/collections"
+
+[move_copy]
+"/home/bastien/.config/qtile"
+
+#end

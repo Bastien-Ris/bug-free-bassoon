@@ -1,0 +1,252 @@
+############################
+## _  _________   ______  ##
+##| |/ / ____\ \ / / ___| ##
+##| ' /|  _|  \ V /\___ \ ##
+##| . \| |___  | |  ___) |##
+##|_|\_\_____| |_| |____/ ##
+############################
+
+from libqtile.config import Key, KeyChord, Group, Screen 
+from libqtile.command import lazy 
+from libqtile import extension
+
+from display import menu_theme
+
+
+#### define some variables
+
+terminal = "kitty"
+mod = "mod4"
+altkey = "mod1"
+up = "k"
+down = "j"
+left = "h"
+right = "l"
+
+browser = "luakit"
+firefox = "firefox"
+term_launch = terminal + " -e "
+
+myapplications = {
+    "g" : "gimpg",
+        }
+
+#def init_keymap(h):
+#    for c in h:
+#        return{
+#            "Key([], " + c +" , lazy.spawn('" + h[c] +"')),"
+#        }
+#launch_app = init_keymap(myapplications)
+
+mywebsites = {
+    "y" : "www.youtube.com",
+    "w" : "www.wikipedia.com",
+    "g" : "www.gentoo.org",
+    "a" : "www.wiki.archlinux.org",
+    "l" : "www.gitlab.com",
+    "h" : "www.github.com"
+}
+
+
+
+#def init_webkeymap(h, b):
+#    for c in h:
+#        return{
+#            Key([], c , lazy.spawn(b  + h[c]i)),
+#        } 
+
+#browse_firefox = init_webkeymap(mywebsites, firefox)
+#browse_browser = init_webkeymap(mywebsites, browser)
+
+def init_media_keys():
+    return{
+          
+        # volume currently handled by volumeicon
+        #Key([], "XF86AudioMute", lazy.spawn('amixer -q set Master toggle')),
+        #Key([], "XF86AudioLowerVolume", lazy.spawn('amixer -c 0 sset Master 5- unmute')),
+        #Key([], "XF86AudioRaiseVolume", lazy.spawn('amixer -c 0 sset Master 5+ unmute')),
+        #Key([mod], "XF86AudioLowerVolume", lazy.spawn('amixer -q set %s 20%%')),
+        #Key([mod], "XF86AudioRaiseVolume", lazy.spawn('amixer -q set %s 80%%')),
+    
+        Key([], "XF86AudioNext", lazy.spawn('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next')),
+        Key([], "XF86AudioPrev", lazy.spawn('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous')),
+        Key([], "XF86AudioPlay", lazy.spawn('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')),
+        Key([], "XF86Mail", lazy.spawn("thunderbird")),
+        Key([], "XF86HomePage", lazy.spawn("rofi -modi drun,window -show drun"), desc="launch gnome-like app-launcher"),
+    
+        Key([], "XF86Calculator", lazy.spawn('galculator')),
+        Key([], "XF86Explorer", lazy.spawn('pcmanfm')),
+        }
+media_keys = init_media_keys()
+
+def init_basic_stuff():
+    return{
+        
+        Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+        Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
+        Key([mod], 'q', lazy.window.toggle_minimize()),
+        Key([mod], "Escape", lazy.window.kill(), desc="Kill focused window"),
+        Key([mod, "shift"], "c", lazy.window.kill(), desc="Kill focused window"), 
+        Key([mod], "Delete", lazy.spawn('xclip -selection clipboard blank')),
+        Key([], "Print", lazy.spawn('/home/bastien/.config/qtile/screenshot.sh')),
+        Key([mod], "Print", lazy.spawn('/home/bastien/.config/qtile/screenshot_select.sh')),
+        }
+basic_stuff = init_basic_stuff()
+
+
+keys = [
+    # Reorganise pro mode? the keychords aim to avoid conflicts with other things, although emacs is easily messing aroung   
+   
+    *media_keys,
+    *basic_stuff,   
+
+        # window navigation
+    Key([mod], left, lazy.layout.left(), desc="Move focus to left"),
+    Key([mod], right, lazy.layout.right(), desc="Move focus to right"),
+    Key([mod], down, lazy.layout.down(), desc="Move focus down"),
+    Key([mod], up, lazy.layout.up(), desc="Move focus up"),
+    Key([mod], "space", lazy.layout.next(), desc="Move focus to next window"),
+     
+    Key([mod, "shift"], "r", lazy.restart(), desc="Restart Qtile"),
+    Key([mod, "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "shift"], "w", lazy.spawn('/home/bastien/.config/qtile/change_theme.sh')),
+    Key([mod, "shift"], "Delete", lazy.spawn('rofi -show power-menu -modi "power-menu:rofi-power-menu --choices=shutdown/reboot/logout/lockscreen"')),
+
+    #Key([mod], "d", lazy.run_extension(extension.DmenuRun(**menu_theme))),
+   
+    # KeyChord([mod], "d", [
+   #         ], mode= "dmenu"
+   # ),      
+        ##window mode
+    KeyChord([mod], "w", [
+            
+            Key([mod], "w", lazy.ungrab_chord()), 
+            
+            *media_keys,
+            *basic_stuff,
+
+            Key([], left, lazy.layout.left(), desc="Move focus to left"),
+            Key([], right, lazy.layout.right(), desc="Move focus to right"),
+            Key([], down, lazy.layout.down(), desc="Move focus down"),
+            Key([], up, lazy.layout.up(), desc="Move focus up"),
+            Key([], "space", lazy.layout.next()),
+        
+            Key([], "a", lazy.layout.grow_left(), desc="Grow window to the left"),
+            Key([], "d", lazy.layout.grow_right(), desc="Grow window to the right"),
+            Key([], "s", lazy.layout.grow_down(), desc="Grow window down"),
+            Key([], "w", lazy.layout.grow_up(), desc="Grow window up"),
+            
+            Key([], "x", lazy.layout.grow_main(), desc="increase ratio master/slave"),
+            Key([], "y", lazy.layout.shrink_main(), desc="decrease ratio master/slave"), 
+
+            Key([mod], left, lazy.layout.shuffle_left(), desc="Move window to the left"),
+            Key([mod], right, lazy.layout.shuffle_right(), desc="Move window to the right"),
+            Key([mod], left, lazy.layout.swap_left()),  ##Monadtall specific
+	        Key([mod], right, lazy.layout.swap_right()), ## monadtall specific
+            Key([mod], down, lazy.layout.shuffle_down(), desc="Move window down"),
+            Key([mod], up, lazy.layout.shuffle_up(), desc="Move window up"),
+	        Key([mod], "space", lazy.layout.toggle_split(), desc="Toggle between split and unsplit sides of stack"),
+
+            #those are for BSP
+	        Key([mod, "shift"], left, lazy.layout.flip_left()),
+	        Key([mod, "shift"], right, lazy.layout.flip_right()),
+            Key([mod, "shift"], down, lazy.layout.flip_down()),
+	        Key([mod, "shift"], up, lazy.layout.flip_up()),
+	        Key([mod, "shift"], "space", lazy.layout.flip()),
+
+            Key([], "n", lazy.layout.normalize()),
+            Key([], "m", lazy.layout.maximize()),
+            Key([], "f", lazy.window.toggle_fullscreen()),
+            Key([], "g", lazy.window.toggle_floating()), 
+ 
+            Key([], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+            Key([mod], "Tab", lazy.prev_layout(), desc="Toggle between layouts"),
+
+            ### think of a way to implement the function in the keychords?
+            Key([], "1", lazy.window.togroup("1"), desc="move focused window to group {x}, without group to screen"),
+            Key([], "2", lazy.window.togroup("2"), desc="move focused window to group {1}"),
+            Key([], "3", lazy.window.togroup("3"), desc="move focused window to group {1}"),
+            Key([], "4", lazy.window.togroup("4"), desc="move focused window to group {1}"),
+            Key([], "5", lazy.window.togroup("5"), desc="move focused window to group {1}"),
+            Key([], "6", lazy.window.togroup("6"), desc="move focused window to group {1}"),
+            Key([], "7", lazy.window.togroup("7"), desc="move focused window to group {1}"),
+            Key([], "8", lazy.window.togroup("8"), desc="move focused window to group {1}"),
+            Key([], "9", lazy.window.togroup("9"), desc="move focused window to group {1}"),
+
+            Key([mod], "1", lazy.window.togroup("1", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "2", lazy.window.togroup("2", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "3", lazy.window.togroup("3", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "4", lazy.window.togroup("4", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "5", lazy.window.togroup("5", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "6", lazy.window.togroup("6", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "7", lazy.window.togroup("7", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "8", lazy.window.togroup("8", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            Key([mod], "9", lazy.window.togroup("9", switch_group=True), desc="Switch to & move focused window to group {x}"),
+            ], mode="windows"
+        ),
+
+    #applications
+    KeyChord([mod], "a", [
+            
+            Key([mod], "a", lazy.ungrab_chord()),
+            
+            *media_keys,
+            *basic_stuff,
+
+            Key([], "d", lazy.run_extension(extension.DmenuRun(**menu_theme))),	
+            Key([], "XF86HomePage", lazy.spawn("rofi -modi drun,window -show drun"), desc="launch gnome-like app-launcher"),
+            #Key([], "p", lazy.spawn("pcmanfm")),
+            Key([], "e", lazy.spawn("emacs")),
+            Key([], "v", lazy.spawn("kitty -e nvim")),
+            Key([], "w", lazy.spawn("libreoffice")),
+            #Key([], "z", lazy.function(find_or_run("zathura"))),
+            Key([], "z", lazy.spawn("zathura")),
+            Key([], "g", lazy.spawn("gimp")),
+            Key([], "i", lazy.spawn("inkscape")),
+            Key([], "w", lazy.spawn("vmware-view")),
+	        
+            Key([], "f", lazy.spawn(firefox)),
+            Key([], "b", lazy.spawn(browser)),
+            Key([], "s", lazy.spawn("spotify --minimized")),
+            Key([], "h", lazy.spawn("kitty -e 'htop'")),
+            Key([], "t", lazy.spawn("kitty -e 'bpytop'")),
+            Key([], "c", lazy.window.kill(), desc="Kill focused window"),
+	        ],mode="launch"
+        ),
+    KeyChord([mod], "f", [ 
+            Key([mod], "f", lazy.ungrab_chord()),
+            #*browse_firefox,
+            *basic_stuff,
+            ], mode="firefox"
+        ),
+    KeyChord([mod], "d", [
+            Key([mod], "d", lazy.ungrab_chord()),
+            #*browse_browser,
+            *basic_stuff,
+            ], mode="web"
+        ),
+    KeyChord([mod], "s", [
+            *media_keys,
+            Key([mod], "s", lazy.ungrab_chord()),
+            ], mode="silent",
+        ),
+]
+
+
+groups = [Group(i) for i in "123456789"]
+
+for i in groups:
+    keys.extend([
+        # mod1 + letter of group = switch to group
+        Key([mod], i.name, lazy.group[i.name].toscreen(),
+            desc="Switch to group {}".format(i.name)),
+
+        # mod1 + shift + letter of group = switch to & move focused window to group
+        #Key([mod, "shift"], i.name, lazy.window.togroup(i.name, switch_group=True),
+        #    desc="Switch to & move focused window to group {}".format(i.name)),
+        # Or, use below if you prefer not to switch to that group.
+        # # mod1 + shift + letter of group = move focused window to group
+        # Key([mod, "shift"], i.name, lazy.window.togroup(i.name), 
+        #    desc="move focused window to group {}".format(i.name)),
+    ])
+

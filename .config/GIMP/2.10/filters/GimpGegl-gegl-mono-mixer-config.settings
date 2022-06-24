@@ -1,0 +1,10 @@
+# settings
+
+(GimpGegl-gegl-mono-mixer-config "2022-06-13 18:18:34"
+    (time 1655137114)
+    (preserve-luminosity no)
+    (red 0.33300000000000002)
+    (green 0.21799999999999992)
+    (blue 2.2240000000000002))
+
+# end of settings

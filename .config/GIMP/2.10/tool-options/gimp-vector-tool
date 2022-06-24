@@ -1,0 +1,9 @@
+# GIMP gimp-vector-tool options
+
+(brush "Clipboard Mask")
+(dynamics "Dynamics Off")
+(pattern "Slate")
+(gradient "FG to BG (RGB)")
+(palette "Color History")
+
+# end of gimp-vector-tool options

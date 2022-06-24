@@ -1,0 +1,11 @@
+# GIMP gimp-crop-tool options
+
+(aspect-denominator 256)
+(aspect-numerator 256)
+(fixed-rule size)
+(pattern "Slate")
+(highlight no)
+(layer-only yes)
+(allow-growing yes)
+
+# end of gimp-crop-tool options
