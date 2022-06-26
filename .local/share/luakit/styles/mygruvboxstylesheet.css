@@ -1,0 +1,100 @@
+@-moz-document url-prefix("luakit://bookmarks/")
+
+/** based on gruvbox colorscheme **/
+
+{* *** Basic *** */
+
+:root {
+    --background       : #282828;
+    --foreground       : #d4be98;
+    --red      : #ea6962;
+    --orange   : #e78a4e;
+    --green    : #a9b665;
+    --blue     : #7daea3;
+    --purple   : #d3869b;
+    --aqua     : #89b482;
+    --darkgray : #484732;
+}
+
+    main{
+    color: #d4be98 !important;
+    background-color: #282828 !important;
+  }
+
+  body, footer, #bodyContent, #container {
+    color: #d4be98 !important;
+    background-color: #282828 !important;
+  }
+    
+  title  {
+    color: #a9b665!important;
+    background-color: #282828 !important;
+    }
+  
+    h1 {
+    color: #ea6962!important;
+    background-color: #282828 !important;
+    }
+   
+
+    h2, h3 {
+    color: #e78a4e !important;
+    background-color: #282828 !important;
+    }
+
+    code {
+    color: #282828 !important;
+    background-color: #d4be98 !important;
+     }
+    
+     small    {
+      background-color: #282828 !important;
+      color: #a9b665 !important;
+    }
+  
+   div    {
+      background-color: #282828 !important;
+      color: #d4be98 !important;
+   }
+
+    form    {
+      background-color: #282828 !important;
+      color: #7daea3 !important;
+   }
+    
+    table, tbody, tr, td {
+      color: #d4be98!important;
+      background-color: #282828 !important;
+      }
+
+   ul{
+
+    background-color: #282828 !important;
+    color: #d3869b !important;
+   }
+
+   a{
+       
+    background-color: #282828 !important;
+    color: #a9b665 !important;
+   }
+
+    span {
+
+    background-color: #282828 !important;
+    color: #7daea3 !important;
+   }
+
+    input {
+
+    background-color: #d4be98 !important;
+    color: #282828 !important;
+   }
+
+    header, nav   { 
+    color: #e78a4e !important;
+    background-color: #282828 !important;
+    {  
+
+ }
+
