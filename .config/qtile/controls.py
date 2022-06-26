@@ -6,20 +6,23 @@
 ## \____\___/|_| \_| |_| |_| \_\\___/|_____|____/ ##
 ####################################################
 
-from libqtile.config import Key, KeyChord, Screen
+from libqtile.config import Key, KeyChord, Screen, Group, ScratchPad, DropDown
 from libqtile.command import lazy 
 from libqtile import extension
 from groups import groups
 from appearance import menu_theme
 from libqtile import hook 
+from mysystem import * 
 
 ###############################################################################
-#### define some variables
+#### define some keys
 ###############################################################################
 
-### in this config, asdw are already used. "Up", "Down", "Left", "Right" 
-###  are an option. For Gnu/emacs kind of stuff, that woudn't work
-###  alt and ctrl are not used in this config 
+### 
+### in this config, alt and ctrl are not used 
+### "asdw" are already used. 
+### "Up", "Down", "Left", "Right" 
+###  are an option. For Gnu/emacs kind of stuff, must remap everything
 
 mod = "mod4"
 up = "k"
@@ -27,56 +30,8 @@ down = "j"
 left = "h"
 right = "l"
 
-## write apps-name as a launch command (for example "spotify --minimized")
-## the dictionary keys are used to generate the keybindings
-## through use of modes and keychords, keybinds for applications, websites or 
-## groups don't overlap, so you can map "1", "a", or  to a group, a website and 
-## an app 
-##
 
-terminal = "kitty"
-
-mybrowser = "luakit"
-mysecondbrowser = "firefox"
-
-myapplications = {
-
-   "p" : "pcmanfm",                                
-   "e" : "emacs",                                  
-   "v" : "kitty -e nvim",                          
-   "l" : "libreoffice",                            
-   "z" : "zathura",                                
-   "g" : "gimp",                                   
-   "i" : "inkscape",                               
-   "w" : "vmware-view",                            
-   "f" : mysecondbrowser,                                       ##                                  
-   "b" : mybrowser,                                
-   "h" : "kitty -e 'htop'",                        
-   "t" : "kitty -e 'bpytop'", 
-   "g" : "gimp",
-        }
-
-mywebsites = {
-    "y" : "www.youtube.com",
-    "w" : "www.wikipedia.com",
-    "g" : "www.gentoo.org",
-    "a" : "www.wiki.archlinux.org",
-    "l" : "www.gitlab.com",
-    "h" : "www.github.com"
-}
-
-## mode_names
-def init_modes():
-    return [
-            "layout",    ##first mode : window and group controls, mod + w
-            "launch",    ##second mode : run applications based on dictionary "myapplications", mod + a   
-            "browser",    ##third mod    
-            "firefox",   ##fourth mode, the same as third but with a second browser   
-            "silent"
-            ]
-mymodes = init_modes()
-
-###############################################################################
+##############################################################################
 ##    Functions that generate embedded key tables in the keychords
 #################################################################################
 def launch_apps(applications):
@@ -93,6 +48,7 @@ def browse_the_web(browser, websites):
     return custom_keys              
 
 def move_between_groups(groups):
+    groups = [Group(i) for i in "123456789"]
     custom_keys = []
     for i in groups:                                                                
         custom_keys.append(Key([], i.name, lazy.window.togroup(i.name, switch_group=False),
@@ -100,6 +56,7 @@ def move_between_groups(groups):
         custom_keys.append(Key([mod], i.name, lazy.window.togroup(i.name, switch_group=True),
                  desc="move focused window to group {} & switch".format(i.name)),)
     return custom_keys
+
 
 ############################################################################### 
 ##     basic_stuff and media keys are available in all modes except "silent", list 
@@ -126,11 +83,11 @@ def init_media_keys():
         Key([], "XF86AudioPlay", lazy.spawn('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')),
         Key([], "XF86HomePage", lazy.spawn("rofi -modi drun,window -show drun"), desc="launch gnome-like app-launcher"),
     
-        Key([], "XF86Calculator", lazy.spawn('galculator')),
+        Key([], "XF86Calculator", lazy.group['scratch'].dropdown_toggle('math')),
 
           
-        Key([], "XF86Mail", lazy.group['0'].dropdown_toggle('mails')), 
-        Key([], "XF86Explorer", lazy.group['0'].dropdown_toggle('files')),
+        Key([], "XF86Mail", lazy.group['scratch'].dropdown_toggle('mails')), 
+        Key([], "XF86Explorer", lazy.group['scratch'].dropdown_toggle('files')),
         }
 media_keys = init_media_keys()
 
@@ -149,9 +106,9 @@ def init_basic_stuff():
         Key([mod], "Print", lazy.spawn('/home/bastien/.config/qtile/screenshot_select.sh')),
         
 
-        Key([], 'F10', lazy.group['0'].dropdown_toggle('music')), 
-        Key([], 'F12', lazy.group['0'].dropdown_toggle('term')),
-        Key([], 'F11', lazy.group['0'].dropdown_toggle('web')), 
+        Key([], 'F10', lazy.group['scratch'].dropdown_toggle('music')), 
+        Key([], 'F12', lazy.group['scratch'].dropdown_toggle('term')),
+        Key([], 'F11', lazy.group['scratch'].dropdown_toggle('web')), 
         }
 basic_stuff = init_basic_stuff()
 
@@ -241,7 +198,6 @@ keys = [
             
             *launch_apps(myapplications),
             
-            *media_keys,
             *basic_stuff,
             
 	        ], mode=mymodes[1]
@@ -274,7 +230,7 @@ keys = [
         ),
 ]
 
-
+groups = [Group(i) for i in "123456789"]
 for i in groups:
     keys.extend([
         Key([mod], i.name, lazy.group[i.name].toscreen(),

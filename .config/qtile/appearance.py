@@ -13,6 +13,8 @@ from libqtile import bar, layout, widget, qtile, extension
 from libqtile.config import Click, Drag, Group, Screen, Match
 from libqtile.lazy import lazy
 from libqtile.command import lazy
+from mysystem import *
+
 import os
 import subprocess
 
@@ -20,7 +22,7 @@ import subprocess
 ## update mouse_callbacks manually
 
 #The following lines define a color theme depending on Pywal
-#    colors 0 to 15, but redundant, here use [0-8]
+#    colors 0 to 15, but redundant, here use [
 #    0 is white or quasi, 8 is black   
 #    with the palet, init gradient generate gradient[0-7]        
 
@@ -37,14 +39,15 @@ load_colors(cache)
 
 def init_gradient():    
     return [
+        [colors[7], colors[1] ],    
         [colors[1], colors[2] ], 
         [colors[2], colors[3] ], 
         [colors[3], colors[4] ], 
         [colors[4], colors[5] ], 
         [colors[5], colors[6] ], 
-        [colors[1], colors[3] ], 
-        [colors[2], colors[4] ], 
-        [colors[1], colors[5] ], 
+        [colors[6], colors[7] ], 
+        [colors[7], colors[1] ], 
+        [colors[1], colors[5] ],      
         ]
 gradient = init_gradient()
 
@@ -224,7 +227,7 @@ screens = [
             widget.Image(filename='~/.config/qtile/icons/python-highcontrast.png',
 					mouse_callbacks= {
                     'Button1': lazy.spawn('rofi -show drun'),
-                    'Button2': lazy.spawn("kitty"),   
+                    'Button2': lazy.spawn(terminal),   
                     'Button3': lazy.run_extension(extension.DmenuRun(**menu_theme))},
 					background=colors[1],
 					margin_x = 8
@@ -235,7 +238,7 @@ screens = [
              widget.GroupBox(
 					visible_groups=["1","2","3","4","5"],
                     hide_unused = False,
-                    this_current_screen_border=gradient[0],
+                    this_current_screen_border=gradient[1],
                     **groupbox_theme),
             widget.GroupBox(
 					visible_groups=[ "6", "7", "8", "9" ],
@@ -256,19 +259,19 @@ screens = [
              widget.Image(filename='~/.config/qtile/icons/vim.png',
                       background=background_color,
                       margin_x = 15,
-					  mouse_callbacks={
-                        'Button1':lazy.spawn('kitty -e vifm /home/bastien/.config/qtile/'),                              
-                        'Button3':lazy.spawn('kitty -e nvim /home/bastien/.config/qtile/')}),                               
+				  mouse_callbacks={
+                        'Button1':lazy.spawn( myapplications["v"]), 
+                        'Button3':lazy.spawn(myapplications["v"] + "  ~/.config/qtile/")}),                               
              widget.Chord(
                         background=background_color,
                         fmt= '{}',
                         fontsize = 18,
                             chords_colors={
-                            'layout': (background_color, gradient[0]),
-                            'launch': (background_color, gradient[2]),
-                            'silent': (background_color, gradient[4]),
-                            'firefox': (background_color, gradient[6]),
-                            'browser': (background_color, gradient[3]),
+                            mymodes[0] : (background_color, gradient[0]),
+                            mymodes[1] : (background_color, gradient[2]),
+                            mymodes[2] : (background_color, gradient[4]),
+                            mymodes[3] : (background_color, gradient[6]),
+                            mymodes[4] : (background_color, gradient[3]),
                             }
                             ),
              *powerline_arrow("r", *basic_r_arrow, background_color, colors[3]),   
@@ -276,7 +279,7 @@ screens = [
              widget.Image(filename='~/.config/qtile/icons/gtk-select-font.png',
 				    mouse_callbacks= { 
 					'Button1':lazy.run_extension(extension.DmenuRun(**menu_theme, dmenu_command='clipmenu')),
-                    'Button3':lazy.spawn('xclip -selection clipboard blank')},                             
+                        },                             
                     background=colors[3],
                     margin_x = 8 
                     ), 
@@ -298,14 +301,14 @@ screens = [
                     foreground=font_color,
                     highlight_method='block',
                     unfocused_border=background_color,
-					border=gradient[2],
-					urgent_border=gradient[7],
+					border=colors[2],
+					urgent_border=colors[7],
 					max_title_width=75,
                     padding=4,
 					rounded=True,
 					markup=True,
 					markup_minimized="<b>{}</b>"),
-              widget.Spacer(),
+            widget.Spacer(),
 
     
              *powerline_arrow("l", *basic_l_arrow, transparent_color, colors[4]),
@@ -314,8 +317,8 @@ screens = [
                     margin_x=8,
                        mouse_callbacks={
                         'Button1':lazy.spawn('bash /home/bastien/.config/qtile/pulse-audio-notify.sh mute'), 
-                        'Button2':lazy.spawn('kitty -e pulsemixer'),
-                        'Button3':lazy.spawn('kitty -e alsamixer'),
+                        'Button2':lazy.spawn(myapplications['XF86AudioRaiseVolume']),
+                        'Button3':lazy.spawn(myapplications['XF86AudioLowerVolume']),
                         'Button4':lazy.spawn('bash /home/bastien/.config/qtile/pulse-audio-notify.sh up'), 
                         'Button5':lazy.spawn('bash /home/bastien/.config/qtile/pulse-audio-notify.sh down')
                     }),
@@ -330,7 +333,8 @@ screens = [
                     volume_up_command = 'bash /home/bastien/.config/qtile/pulse-audio-notify.sh up',
                     mute_command = 'bash /home/bastien/.config/qtile/pulse-audio-notify.sh mute',
 					mouse_callbacks={
-                        'Button3':lazy.spawn('kitty -e alsamixer')}),             
+                        'Button1':lazy.spawn(myapplications["XF86AudioRaiseVolume"]),
+                        'Button3':lazy.spawn(myapplications["XF86AudioLowerVolume"])}),             
                *powerline_arrow("l", *basic_l_arrow, colors[4], background_color),
 
                 widget.Image(filename='~/.config/qtile/icons/network-transmit-receive.png',
@@ -344,7 +348,7 @@ screens = [
                     background=colors[5]
                     ),                
                 widget.Memory(format='{MemUsed: .0f}{mm}',
-					mouse_callbacks= {'Button1': lazy.spawn("kitty -e 'htop'")},
+					mouse_callbacks= {'Button1': lazy.spawn(myapplications['h'])},
 					background=colors[5],
                     foreground=font_color),
                 *powerline_arrow("l", *basic_l_arrow, colors[5], background_color),	
@@ -352,13 +356,13 @@ screens = [
                 widget.Image(filename='~/.config/qtile/icons/cpu.png',
                         background=background_color),
                 widget.CPU(format='{load_percent}%  ', 
-					mouse_callbacks={'Button1':lazy.spawn('kitty -e bpytop')},
+					mouse_callbacks={'Button1':lazy.spawn(myapplications['t'])},
 					foreground=font_color,
                     background=background_color,
                     ),
                 widget.ThermalSensor(
 					tag_sensor='Package id 0',
-					mouse_callbacks={'Button1':lazy.spawn('kitty -e bpytop')},
+					mouse_callbacks={'Button1':lazy.spawn(myapplications['t'])},
 					background=background_color,
                     threshold=60,
                     foreground=font_color,
@@ -373,20 +377,20 @@ screens = [
 					visible_on_warn=False, 
 					format='~{uf}{m}', 
 					foreground=font_color,
-                    mouse_callbacks={'Button3':lazy.spawn('pcmanfm'), 'Button1':lazy.spawn('kitty -e ranger ~')},
+                    mouse_callbacks={'Button1':lazy.spawn(myapplications['r'])},
 					background=colors[6]
                     ),
                 widget.DF(partition="/", 
 					visible_on_warn=False, 
 					format='/{uf}{m}', 
-					mouse_callbacks={'Button3':lazy.spawn('pcmanfm'), 'Button1':lazy.spawn('kitty -e ranger /')},
+					mouse_callbacks={'Button1':lazy.spawn(myapplications['r'] + " /")},
 					background=colors[6],
                     foreground=font_color,
                     ), 
                 widget.DF(partition="/hdd", 
 					visible_on_warn=False, 
 					format='//{uf}{m}', 
-					mouse_callbacks={'Button3':lazy.spawn('pcmanfm'), 'Button1':lazy.spawn('kitty -e ranger /hdd')},
+					mouse_callbacks={'Button1':lazy.spawn(myapplications['r'] + " /hdd")},
 					background=colors[6],
                     foreground=font_color,
                     ),
@@ -397,14 +401,14 @@ screens = [
                         foreground=font_color,
                         padding=3, 
                         mouse_callbacks={'Button2':lazy.spawn('thunderbird -calendar')}),
-                *powerline_arrow("l", *basic_l_arrow, background_color, colors[7]),
+                *powerline_arrow("l", *basic_l_arrow, background_color, gradient[7]),
            
               widget.Image(filename='~/.config/qtile/icons/system-shutdown.png',
                     mouse_callbacks= {'Button1': lazy.spawn('rofi -show power-menu -modi "power-menu:rofi-power-menu --choices=shutdown/reboot/logout/lockscreen"')},
-                    background=colors[7],
+                    background=gradient[7],
                     margin_x = 8
                     ),
-                *powerline_arrow("r", *basic_r_arrow, colors[7], transparent_color),
+                *powerline_arrow("r", *basic_r_arrow, gradient[7], transparent_color),
                 ],
            panel_height,
            **bar_theme,

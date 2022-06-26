@@ -37,6 +37,7 @@ from typing import List  # noqa: F401
 
 from libqtile import bar, layout, widget, qtile, extension
 from libqtile.config import Click, Drag, Group, Match
+from libqtile.layout.floating import Floating
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 import os
@@ -46,10 +47,12 @@ from libqtile import hook
 from os import path
 qtile_path = path.join(path.expanduser("~"), ".config", "qtile")
 
-from controls import terminal, mod, up, down, left, right, keys
+from controls import *
 from appearance import screens, layout_theme, floating_layout_theme, treetab_layout_theme
+from mysystem import *
 #the following lines define primary settings and hooks
 from groups import groups
+
 
 
 
@@ -64,8 +67,8 @@ from groups import groups
 #
 layouts = [
     layout.Max(**layout_theme),
-    layout.MonadTall(**layout_theme, ratio=0.5),
-   	layout.MonadThreeCol(**layout_theme, ratio=0.33),
+    layout.MonadTall(**layout_theme),
+   	layout.MonadThreeCol(**layout_theme),
     layout.Bsp(**layout_theme, fair=False),
     layout.Floating(**floating_layout_theme),
     layout.TreeTab(**treetab_layout_theme),
@@ -112,20 +115,35 @@ auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
 
+
+## two hooks stolen from github justinemithies/qtile-x-dotfiles
+# When application launched automatically focus it's group
+# doesn't wor
+
+@hook.subscribe.client_new
+def modify_window(client):
+    for group in groups:  # follow on auto-move
+        match = next((m for m in group.matches if m.compare(client)), None)
+        if match:
+            targetgroup = client.qtile.groups_map[group.name]  # there can be multiple instances of a group
+            targetgroup.cmd_toscreen(toggle=True)
+            break
+
 # Hook to fallback to the first group with windows when last window of group is killed
+# Pb: it would fall to Scratchpad in the end, that I want to avoid 
+# 
 
 
-#@hook.subscribe.client_killed
-#def fallback(window):
-#    if window.group.windows != [window]:
-#        return
-#    idx = qtile.groups.index(window.group)
-#    for group in qtile.groups[idx - 1::-1]:
-#        if group.windows:
-#            qtile.current_screen.toggle_group(group)
-#            return
-#    qtile.current_screen.toggle_group(qtile.groups[0])
-
+@hook.subscribe.client_killed
+def fallback(window):
+    if window.group.windows != [window]:
+        return
+    idx = qtile.groups.index(window.group)
+    for group in qtile.groups[idx - 1::-1]:
+        if group.windows:
+            qtile.current_screen.toggle_group(group)
+            return
+    qtile.current_screen.toggle_group(qtile.groups[0])
 
 
 @hook.subscribe.client_new
