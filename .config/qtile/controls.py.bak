@@ -99,7 +99,7 @@ def init_basic_stuff():
         Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
         Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
         Key([mod], 'q', lazy.window.toggle_minimize()),
-        Key([mod], 'e', lazy.window.toggle_fullscreen()), ### need to find another letter, e=emacs-mode to come 
+        Key([mod], 'e', lazy.window.toggle_fullscreen()), 
         Key([mod, "shift"], "c", lazy.window.kill(), desc="Kill focused window"), 
         Key([mod], "p", lazy.run_extension(extension.DmenuRun(**menu_theme, dmenu_command='clipmenu'))),
         Key([], "Print", lazy.spawn('/home/bastien/.config/qtile/screenshot.sh')),
@@ -112,8 +112,41 @@ def init_basic_stuff():
         }
 basic_stuff = init_basic_stuff()
 
-def init_layout_mode():
-    return{
+##############################################################################
+######                          here start the keys
+##############################################################################
+
+keys = [
+    # Reorganise pro mode? the keychords aim to avoid conflicts with other things, although emacs is easily messing aroung   
+   
+    *media_keys,
+    *basic_stuff,   
+
+
+        # window navigation
+    Key([mod], left, lazy.layout.left(), desc="Move focus to left"),
+    Key([mod], right, lazy.layout.right(), desc="Move focus to right"),
+    Key([mod], down, lazy.layout.down(), desc="Move focus down"),
+    Key([mod], up, lazy.layout.up(), desc="Move focus up"),
+    Key([mod], "space", lazy.layout.next(), desc="Move focus to next window"),
+     
+    Key([mod, "shift"], "r", lazy.restart(), desc="Restart Qtile"),
+    Key([mod, "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "shift"], "w", lazy.spawn('/home/bastien/.config/qtile/change_theme.sh')),
+    Key([mod, "shift"], "Delete", lazy.spawn('rofi -show power-menu -modi "power-menu:rofi-power-menu --choices=shutdown/reboot/logout/lockscreen"')),
+
+    #Key([mod], "d", lazy.run_extension(extension.DmenuRun(**menu_theme))),
+   
+    # KeyChord([mod], "d", [
+   #         ], mode= "dmenu"
+   # ),      
+        ##window mode
+    KeyChord([mod], "w", [
+            
+            Key([mod], "w", lazy.ungrab_chord()), 
+            
+            *media_keys,
+            *basic_stuff,
 
             Key([], left, lazy.layout.left(), desc="Move focus to left"),
             Key([], right, lazy.layout.right(), desc="Move focus to right"),
@@ -151,100 +184,50 @@ def init_layout_mode():
  
             Key([], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
             Key([mod], "Tab", lazy.prev_layout(), desc="Toggle between layouts"),
+
+            ### think of a way to implement the function in the keychords?
             *move_between_groups(groups)
-            }
-layout_mode= init_layout_mode()
 
-##############################################################################
-######                          here start the keys
-##############################################################################
-
-keys = [
-    
-    *media_keys,
-    *basic_stuff,   
-
-
-        # add some window navigation and simple things for the normal mode
-    Key([mod], left, lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], right, lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], down, lazy.layout.down(), desc="Move focus down"),
-    Key([mod], up, lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(), desc="Move focus to next window"),
-     
-    Key([mod, "shift"], "r", lazy.restart(), desc="Restart Qtile"),
-    Key([mod, "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod, "shift"], "w", lazy.spawn('/home/bastien/.config/qtile/change_theme.sh')),
-    Key([mod, "shift"], "Delete", lazy.spawn('rofi -show power-menu -modi "power-menu:rofi-power-menu --choices=shutdown/reboot/logout/lockscreen"')),
-
-  
-        ##window mode - now I try to implement a single keychord and a full mode
-    KeyChord([mod], "w", [
-            
-
-        *layout_mode,
-        *media_keys,
-        *basic_stuff,
-
-        
-        KeyChord([mod], "w", [
-                
-            *layout_mode,
-            *media_keys,
-            *basic_stuff,
-            Key([mod], "w", lazy.ungrab_chord()),
-       ], mode=mymodes[0]),
-
-    ]),
+            ], mode=mymodes[0]
+        ),
 
     #applications
     KeyChord([mod], "a", [
             
-        *launch_apps(myapplications),
-        *media_keys,
-        *basic_stuff,
-
-        KeyChord([mod], "a", [
-
+            Key([mod], "a", lazy.ungrab_chord()),
+            
             *launch_apps(myapplications),
-            *media_keys,
+            
             *basic_stuff,
-            Key([mod], "a", lazy.ungrab_chord()),   
-        ], mode=mymodes[1]),
-    ]),
-
+            
+	        ], mode=mymodes[1]
+            ),
     KeyChord([mod], "d", [
-
-       *browse_the_web(mybrowser, mywebsites),
-       *media_keys,
-       *basic_stuff,
-
-       KeyChord([mod], "d", [
-
-           *browse_the_web(mybrowser, mywebsites),
-           *media_keys,
-           *basic_stuff,
-           Key([mod], "d", lazy.ungrab_chord()),
-       ], mode=mymodes[2]),
-    ]),    
-
-    KeyChord([mod], "f", [
-
-        KeyChord([mod], "f", [ 
-   
-            *browse_the_web(mysecondbrowser, mywebsites),
+            Key([mod], "d", lazy.ungrab_chord()),
+           
+            *browse_the_web(mybrowser, mywebsites),
+            
             *media_keys,
             *basic_stuff,
-            Key([mod], "f", lazy.ungrab_chord()),      
-        ], mode=mymodes[3]),
-    ]),    
 
+            ], mode=mymodes[2]
+        ),
+    KeyChord([mod], "f", [ 
+            Key([mod], "f", lazy.ungrab_chord()),
+           
+            *browse_the_web(mysecondbrowser, mywebsites),
+
+            *media_keys,
+            *basic_stuff,
+
+            ], mode=mymodes[3]
+        ),
     KeyChord([mod], "s", [
             
             Key([mod], "s", lazy.ungrab_chord()),
            
             ], mode= mymodes[4],
-    ),    
+        ),
 ]
 
 groups = [Group(i) for i in "123456789"]

@@ -24,7 +24,7 @@ groups= [
           ),
 
     Group("2",
-          label= "",
+          label= "",
           persist=True,
           init=True,
           layouts=[
@@ -36,7 +36,7 @@ groups= [
           ),
 
     Group("3",
-          label= "",
+          label= "",
           persist=True,
           init=True,
           layouts=[
@@ -48,7 +48,7 @@ groups= [
           ),
 
     Group("4",
-          label="",
+          label="",
           persist=True,
           init=True,
           layouts=[
@@ -59,9 +59,10 @@ groups= [
           ),
 
    Group("5",
-          label="",
-          persist=True,
-          init=True,
+          label="𝓔",
+          matches=Match(wm_class=["emacs", "Emacs"]),
+          persist=False,
+          init=False,
           layouts=[
             layout.MonadTall(**layout_theme, ratio=0.66),
             layout.TreeTab(**treetab_layout_theme),
@@ -84,7 +85,7 @@ groups= [
             ),
 
     Group("7",
-          label="",
+          label="",
           matches=Match(wm_class=["libreoffice", "LibreOffice"]),
           persist=False,
           init=False,
@@ -95,7 +96,7 @@ groups= [
           ),
 
     Group("8",
-          label="",
+          label="",
           matches=Match(wm_class=[
                 "gimp", "Gimp"
                 "org.inkscape.Inkscape", "Inkscape",
@@ -110,11 +111,11 @@ groups= [
     ),
 
     Group("9",
-        matches=Match(wm_class=[
+       label="",
+       matches=Match(wm_class=[
             "vmware-view", "Vmware-view",
             "virt-manager", "Virt-manager"
             ]),
-        label="",
         persist=False,
         init=False,
         layouts=[layout.Max(**layout_theme)], 
