@@ -73,6 +73,10 @@ engines.searx    = "http://searx.thegpm.org/?q=%s&categories=general"
 --media
 engines.youtube     = "https://www.youtube.com/results?search_query=%s"
 
+-- commercial
+engines.ebay        = "https://www.ebay-kleinanzeigen.de/s-%s/k0"
+engines.idealo      = "https://www.idealo.de/preisvergleich/MainSearchProductCategory.html?q=%s"
+
 --utilities
 engines.arch      = "https://wiki.archlinux.org/index.php/Special:Search?fulltext=Search&search=%s"
 engines.gentoo      = "https://wiki.gentoo.org/index.php?title=Special:Search&profile=advanced&search=%s&fulltext=1" 
@@ -98,7 +102,7 @@ settings. window.default_search_engine = "duckduckgo"
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 select.label_maker = function ()
-    local chars = charset("QWERYASDFYXCV")
+    local chars = interleave("123QWERASDF", "789UIOPJKL")
     return trim(sort(reverse(chars)))
 end
 
