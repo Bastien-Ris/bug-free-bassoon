@@ -48,7 +48,7 @@ def browse_the_web(browser, websites):
     return custom_keys              
 
 def move_between_groups(groups):
-    groups = [Group(i) for i in "123456789"]
+    groups = [Group(i) for i in "123456789eogfvi"]
     custom_keys = []
     for i in groups:                                                                
         custom_keys.append(Key([], i.name, lazy.window.togroup(i.name, switch_group=False),
@@ -98,8 +98,6 @@ def init_basic_stuff():
         
         Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
         Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-        Key([mod], 'q', lazy.window.toggle_minimize()),
-        Key([mod], 'e', lazy.window.toggle_fullscreen()), ### need to find another letter, e=emacs-mode to come 
         Key([mod, "shift"], "c", lazy.window.kill(), desc="Kill focused window"), 
         Key([mod], "p", lazy.run_extension(extension.DmenuRun(**menu_theme, dmenu_command='clipmenu'))),
         Key([], "Print", lazy.spawn('/home/bastien/.config/qtile/screenshot.sh')),
@@ -114,40 +112,70 @@ basic_stuff = init_basic_stuff()
 
 def init_layout_mode():
     return{
-
+            Key([], "space", lazy.hide_show_bar(), desc="Toggle visibility of Bar"),
+            Key([], "Left", lazy.screen.prev_group(skip_empty=True)), # cycle left   
+            Key([], "Right", lazy.screen.next_group(skip_empty=True)), #cycle right
+            Key([], 'Up', lazy.window.toggle_minimize()),
+            Key([], 'Down', lazy.window.toggle_fullscreen()), 
+            
+            
             Key([], left, lazy.layout.left(), desc="Move focus to left"),
             Key([], right, lazy.layout.right(), desc="Move focus to right"),
             Key([], down, lazy.layout.down(), desc="Move focus down"),
             Key([], up, lazy.layout.up(), desc="Move focus up"),
-            Key([], "space", lazy.layout.next()),
-        
+                   
             Key([], "a", lazy.layout.grow_left(), desc="Grow window to the left"),
             Key([], "d", lazy.layout.grow_right(), desc="Grow window to the right"),
-            Key([], "w", lazy.layout.grow_down(), desc="Grow window down"),
-            Key([], "s", lazy.layout.grow_up(), desc="Grow window up"),
+            Key([], "s", lazy.layout.grow_down(), desc="Grow window down"),
+            Key([], "w", lazy.layout.grow_up(), desc="Grow window up"),
             
+
             Key([], "x", lazy.layout.grow_main(), desc="increase ratio master/slave"),
             Key([], "y", lazy.layout.shrink_main(), desc="decrease ratio master/slave"), 
-
+            Key([], "m", lazy.layout.maximize()),
+            Key([], "n", lazy.layout.normalize()),
+            Key([], "c", lazy.window.kill(), desc="kill focus window"), 
+            
             Key([mod], left, lazy.layout.shuffle_left(), desc="Move window to the left"),
             Key([mod], right, lazy.layout.shuffle_right(), desc="Move window to the right"),
             Key([mod], left, lazy.layout.swap_left()),  ##Monadtall specific
 	        Key([mod], right, lazy.layout.swap_right()), ## monadtall specific
             Key([mod], down, lazy.layout.shuffle_down(), desc="Move window down"),
             Key([mod], up, lazy.layout.shuffle_up(), desc="Move window up"),
-	       
+	      
+
+            ## floating windows rules
+            Key([], "KP_Insert", lazy.window.toggle_floating()),
+
+            Key([mod], "KP_Down", lazy.window.resize_floating(0, 25), desc="resize floating window to the right"),
+            Key([mod], "KP_Up", lazy.window.resize_floating(0, -25), desc="resize fl. window to the right"),
+	        Key([mod], "KP_Left", lazy.window.resize_floating(-25, 0), desc="resize floating window to the left"),
+            Key([mod], "KP_Right", lazy.window.resize_floating(25, 0), desc="resize floating window to the right"),
+            
+            Key([], "KP_Right", lazy.window.move_floating(25,0), desc="Move floating window to the right"),
+            Key([], "KP_Left", lazy.window.move_floating(-25,0), desc="Move floating window to the right"),
+	        Key([], "KP_Up", lazy.window.move_floating(0,-25), desc="Move floating window upwards"),
+            Key([], "KP_Down", lazy.window.move_floating(0,25), desc="Move floating window downwards"),
+            
+
+            
+            ### Treetab controls
+            Key([mod], "a", lazy.layout.section_up(),
+             desc='Move up a section in treetab'),
+            Key([mod], "d", lazy.layout.section_down(),
+             desc='Move up a section in treetab'),
+            Key([mod], "w", lazy.layout.move_up(), 
+                desc='Move down a section in treetab'),
+            Key([mod], "s", lazy.layout.move_down(), 
+                desc='Move down a section in treetab'),
 
             #those are for BSP
-	        Key([mod], "z", lazy.layout.flip_left()),
-	        Key([mod], "o", lazy.layout.flip_right()),
-            Key([mod], "u", lazy.layout.flip_down()),
-	        Key([mod], "i", lazy.layout.flip_up()),
+	        Key([mod], "a", lazy.layout.flip_left()),
+	        Key([mod], "d", lazy.layout.flip_right()),
+            Key([mod], "s", lazy.layout.flip_down()),
+	        Key([mod], "w", lazy.layout.flip_up()),
 	        Key([mod], "space", lazy.layout.flip()),
-
-
-            Key([], "t", lazy.layout.normalize()),
-            Key([], "m", lazy.layout.maximize()),
-            Key([], "f", lazy.window.toggle_floating()), 
+            
  
             Key([], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
             Key([mod], "Tab", lazy.prev_layout(), desc="Toggle between layouts"),
@@ -160,17 +188,24 @@ layout_mode= init_layout_mode()
 ##############################################################################
 
 keys = [
-    
+   
     *media_keys,
     *basic_stuff,   
 
-
-        # add some window navigation and simple things for the normal mode
+    
+    Key([mod], "Left", lazy.screen.prev_group(skip_empty=True)), # cycle left   
+    Key([mod], "Right", lazy.screen.next_group(skip_empty=True)), #cycle right
+    Key([mod], 'Up', lazy.window.toggle_minimize()),
+    Key([mod], 'Down', lazy.window.toggle_fullscreen()), 
+    Key([mod], "KP_Insert", lazy.window.toggle_floating()), 
+    
+    # add some window navigation and simple things for the normal mode
     Key([mod], left, lazy.layout.left(), desc="Move focus to left"),
     Key([mod], right, lazy.layout.right(), desc="Move focus to right"),
     Key([mod], down, lazy.layout.down(), desc="Move focus down"),
     Key([mod], up, lazy.layout.up(), desc="Move focus up"),
     Key([mod], "space", lazy.layout.next(), desc="Move focus to next window"),
+
      
     Key([mod, "shift"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
@@ -192,7 +227,7 @@ keys = [
             *layout_mode,
             *media_keys,
             *basic_stuff,
-            Key([mod], "w", lazy.ungrab_chord()),
+           #Key([mod], "w", lazy.ungrab_chord()),
        ], mode=mymodes[0]),
 
     ]),
@@ -209,7 +244,7 @@ keys = [
             *launch_apps(myapplications),
             *media_keys,
             *basic_stuff,
-            Key([mod], "a", lazy.ungrab_chord()),   
+           #Key([mod], "a", lazy.ungrab_chord()),   
         ], mode=mymodes[1]),
     ]),
 
@@ -224,7 +259,7 @@ keys = [
            *browse_the_web(mybrowser, mywebsites),
            *media_keys,
            *basic_stuff,
-           Key([mod], "d", lazy.ungrab_chord()),
+          #Key([mod], "d", lazy.ungrab_chord()),
        ], mode=mymodes[2]),
     ]),    
 
@@ -235,7 +270,7 @@ keys = [
             *browse_the_web(mysecondbrowser, mywebsites),
             *media_keys,
             *basic_stuff,
-            Key([mod], "f", lazy.ungrab_chord()),      
+            #Key([mod], "f", lazy.ungrab_chord()),      
         ], mode=mymodes[3]),
     ]),    
 
@@ -247,12 +282,10 @@ keys = [
     ),    
 ]
 
-groups = [Group(i) for i in "123456789"]
+groups = [Group(i) for i in "123456789eogfvi"] 
 for i in groups:
     keys.extend([
         Key([mod], i.name, lazy.group[i.name].toscreen(),
             desc="Switch to group {}".format(i.name)),
-        Key([mod], "u", lazy.screen.prev_group(skip_empty=True)), # cycle left   
-        Key([mod], "i", lazy.screen.next_group(skip_empty=True)), #cycle right
     ])
 

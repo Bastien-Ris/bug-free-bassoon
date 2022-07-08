@@ -77,7 +77,7 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-panel_height = 24
+panel_height = 24 
 
 def init_bar_theme():
     return{
@@ -91,6 +91,7 @@ bar_theme = init_bar_theme()
 
 ### these inits are defined here to use the pywal backend but also used in
 ### config.py for the layouts and controls.py for the menu
+
 def init_layout_theme():
 	return {"margin":4,
 			"border_width":4,
@@ -119,7 +120,7 @@ def init_treetab_layout_theme():
 		'section_bottom' : 20,
 		'level_shift' : 3,
 		'vspace' : 3,
-		'panel_width' : 200
+		'panel_width' : 180
             }
 treetab_layout_theme = init_treetab_layout_theme()
 
@@ -144,18 +145,21 @@ def init_menu_theme():
 			}			
 menu_theme = init_menu_theme()
 
-def init_groupbox_theme():
+def init_groupbox_theme(color1, color2):
     return {
-           "active" : gradient[0],
-			"inactive": font_color,
+            "active" : color1,
+            "font"  : 'UbuntuMono Nerd Font',
+            "inactive": color2,
             "rounded" :True,
             "highlight_method" : 'border',
             "fontsize" : 14,
-			"urgent_border" : floating_border_color,
+			"this_current_screen_border": gradient[1],
+            "urgent_border" : floating_border_color,
 			"urgent_text" : floating_focus_color,
 			"background" : background_color,
             }
-groupbox_theme = init_groupbox_theme()
+groupbox_theme_1= init_groupbox_theme(gradient[1], font_color)
+groupbox_theme_2= init_groupbox_theme(gradient[6], colors[7])
 
 ## 
 ## place for some deco !
@@ -238,13 +242,16 @@ screens = [
              widget.GroupBox(
 					visible_groups=["1","2","3","4","5"],
                     hide_unused = False,
-                    this_current_screen_border=gradient[1],
-                    **groupbox_theme),
-            widget.GroupBox(
-					visible_groups=[ "6", "7", "8", "9" ],
+                    **groupbox_theme_1),
+            
+             widget.GroupBox(
+					visible_groups=["6","7","8","9"],
                     hide_unused = True,
-					this_current_screen_border=gradient[5],
-                    **groupbox_theme),
+                    **groupbox_theme_1),
+            
+             widget.GroupBox(
+					visible_groups=[ "e", "g", "o", "v", "f", "i" ],                   
+                    **groupbox_theme_2),
             *powerline_arrow("r", *basic_r_arrow, background_color, colors[2]),
             	
                          
@@ -317,8 +324,8 @@ screens = [
                     margin_x=8,
                        mouse_callbacks={
                         'Button1':lazy.spawn('bash /home/bastien/.config/qtile/pulse-audio-notify.sh mute'), 
-                        'Button2':lazy.spawn(myapplications['XF86AudioRaiseVolume']),
-                        'Button3':lazy.spawn(myapplications['XF86AudioLowerVolume']),
+                        'Button2':lazy.spawn(myapplications['XF86AudioLowerVolume']),
+                        'Button3':lazy.spawn(myapplications['XF86AudioRaiseVolume']),
                         'Button4':lazy.spawn('bash /home/bastien/.config/qtile/pulse-audio-notify.sh up'), 
                         'Button5':lazy.spawn('bash /home/bastien/.config/qtile/pulse-audio-notify.sh down')
                     }),
@@ -333,8 +340,8 @@ screens = [
                     volume_up_command = 'bash /home/bastien/.config/qtile/pulse-audio-notify.sh up',
                     mute_command = 'bash /home/bastien/.config/qtile/pulse-audio-notify.sh mute',
 					mouse_callbacks={
-                        'Button1':lazy.spawn(myapplications["XF86AudioRaiseVolume"]),
-                        'Button3':lazy.spawn(myapplications["XF86AudioLowerVolume"])}),             
+                        'Button1':lazy.spawn(myapplications["XF86AudioLowerVolume"]),
+                        'Button3':lazy.spawn(myapplications["XF86AudioRaiseVolume"])}),             
                *powerline_arrow("l", *basic_l_arrow, colors[4], background_color),
 
                 widget.Image(filename='~/.config/qtile/icons/network-transmit-receive.png',

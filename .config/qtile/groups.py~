@@ -14,147 +14,77 @@ from appearance import layout_theme, floating_layout_theme, treetab_layout_theme
 
 groups= [
     Group("1",
-          label= "",
-          #label= "",
+          label= "",
           layouts=[
             layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme, ),
-            layout.Bsp(**layout_theme, fair=True),
+   	        layout.MonadThreeCol(**layout_theme, ratio=0.33),
+            layout.Bsp(**layout_theme, fair=False),
             layout.Floating(**floating_layout_theme),
                 ] 
           ),
 
     Group("2",
-          label="",
-          #label= "",
+          label= "",
           persist=True,
           init=True,
           layouts=[
             layout.MonadTall(**layout_theme,  ratio=0.5 ),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
+   	        layout.MonadThreeCol(**layout_theme, ratio=0.33),
+            layout.Bsp(**layout_theme, fair=False),
             layout.Floating(**floating_layout_theme),
                 ] 
           ),
 
     Group("3",
-          label= "",
-          #label= "",
+          label= "",
           persist=True,
           init=True,
           layouts=[
             layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
+   	        layout.MonadThreeCol(**layout_theme, ratio=0.33),
+            layout.Bsp(**layout_theme, fair=False),
             layout.Floating(**floating_layout_theme),
                 ]   
           ),
 
     Group("4",
-          label= "", 
-          #label="",
+          label="",
           persist=True,
           init=True,
           layouts=[
-            layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
+            layout.MonadTall(**layout_theme, ratio=0.66),
+            layout.TreeTab(**treetab_layout_theme),
             layout.Floating(**floating_layout_theme),
                 ] 
           ),
 
-    Group("5",
-          label = "", 
-          #label="",
-          persist=True,
-          init=True,
-          layouts=[
-            layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
-            layout.Floating(**floating_layout_theme),
-                ]
-          ),
-
-    Group("6",
-          label= "", 
-          #label="",
-          persist=True,
-          init=True,
-          layouts=[
-            layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
-            layout.Floating(**floating_layout_theme),
-                ]
-          ),
-
-    Group("7",
-          label="",
-          #label="",
-          persist=True,
-          init=True,
-          layouts=[
-            layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
-            layout.Floating(**floating_layout_theme),
-                ]
-          ),
-
-    Group("8",
-          label = "",
-          #label="",
-          persist=True,
-          init=True,
-          layouts=[
-            layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
-            layout.Floating(**floating_layout_theme),
-                ],
-          ),
-
-    Group("9",
-          label="",
-          persist=True,
-          init=True,
-          layouts=[
-            layout.MonadTall(**layout_theme, ratio=0.5),
-   	        layout.MonadThreeCol(**layout_theme),
-            layout.Bsp(**layout_theme, fair=True),
-            layout.Floating(**floating_layout_theme),
-                ]
-          ),
-
-   Group("e",
+   Group("5",
           label="𝓔",
           matches=Match(wm_class=["emacs", "Emacs"]),
           persist=False,
           init=False,
           layouts=[
-            layout.Max(**layout_theme),
-            layout.TreeTab(**treetab_layout_theme),
             layout.MonadTall(**layout_theme, ratio=0.66),
+            layout.TreeTab(**treetab_layout_theme),
             layout.Floating(**floating_layout_theme),
                 ] 
           ),
 
 
-    Group("f",
+    Group("6",
           label="",
           matches=Match(wm_class=["firefox", "Firefox"]),
           persist=False,
           init=False,
           layouts=[
             layout.Max(**layout_theme),
-            layout.TreeTab(**treetab_layout_theme),
             layout.MonadTall(**layout_theme, ratio=0.66),
+            layout.TreeTab(**treetab_layout_theme),
             layout.Floating(**floating_layout_theme),
-               ]
+                ]
             ),
 
-    Group("o",
+    Group("7",
           label="",
           matches=Match(wm_class=["libreoffice", "LibreOffice"]),
           persist=False,
@@ -162,12 +92,10 @@ groups= [
           layouts=[
               layout.Max(**layout_theme),
               layout.TreeTab(**treetab_layout_theme),
-              layout.MonadTall(**layout_theme, ratio=0.66),
-              layout.Floating(**floating_layout_theme),
-                ]
+                    ]
           ),
 
-    Group("i",
+    Group("8",
           label="",
           matches=Match(wm_class=[
                 "gimp", "Gimp"
@@ -178,25 +106,11 @@ groups= [
           init=False,
           layouts=[
               layout.Max(**layout_theme), 
-              layout.TreeTab(**treetab_layout_theme ),
-              layout.Floating(**floating_layout_theme),
+              layout.TreeTab(**treetab_layout_theme )
                 ]
     ),
 
-    Group("g",
-          label="",
-          matches=Match(wm_class=[
-                "steam", "Steam"
-                ]),
-          persist=False,
-          init=False,
-          layouts=[
-              layout.Max(**layout_theme), 
-              layout.Floating(**floating_layout_theme),
-                ]
-    ),
-
-    Group("v",
+    Group("9",
        label="",
        matches=Match(wm_class=[
             "vmware-view", "Vmware-view",
@@ -204,11 +118,7 @@ groups= [
             ]),
         persist=False,
         init=False,
-        layouts=[
-            layout.MonadThreeCol(**layout_theme), 
-            layout.TreeTab(**treetab_layout_theme ),
-            layout.Floating(**floating_layout_theme),
-               ]
+        layouts=[layout.Max(**layout_theme)], 
     ),
 ]
 ###############################################################################

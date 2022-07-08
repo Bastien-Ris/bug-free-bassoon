@@ -30,22 +30,27 @@ mysecondbrowser = "firefox"
 myapplications = {
 
    "p" : "pcmanfm",                                
-   "e" : "emacs",                                  
-   "v" : "kitty -e nvim",                          
-   "l" : "libreoffice",                            
+   "e" : "emacsclient -c -a 'emacs'",                                  
+   "n" : "kitty -e nvim",                          
+   "o" : "libreoffice",                            
    "z" : "zathura",                                
    "g" : "gimp",                                   
-   "i" : "inkscape",                               
+   "i" : "inkscape",
+   "v" : "virt-manager",
    "w" : "vmware-view",                            
    "f" : mysecondbrowser,                                       ##                                  
    "b" : mybrowser,                                
    "h" : "kitty -e htop",                        
    "t" : "kitty -e bpytop", 
    "g" : "gimp",
+   "c" : "geeqie",
+   "s" : "steam",
+   "q" : "/home/bastien/.local/share/flatpak/exports/bin/us.zoom.Zoom",
    "r" : "kitty -e ranger",
-   "j" : "kitty -e conda run jupyter-notebook",
+   "j" : "kitty -e ~/miniconda3/bin/conda run jupyter-notebook",
    "XF86AudioLowerVolume" : "kitty -e pulsemixer",
-   "XF86AudioRaiseVolume" : "kitty -e alsamixer"
+   "XF86AudioRaiseVolume" : "kitty -e alsamixer",
+   
         }
 
 mywebsites = {

@@ -115,19 +115,40 @@ auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
 
+# If things like steam games want to auto-minimize themselves when losing
+# focus, should we respect this or not?
+auto_minimize = True
 
+# When using the Wayland backend, this can be used to configure input devices.
+wl_input_rules = None
+
+
+##############################################################
+##    differents hooks
+##############################################################
 ## two hooks stolen from github justinemithies/qtile-x-dotfiles
 # When application launched automatically focus it's group
 # doesn't wor
 
+@hook.subscribe.layout_change
+def layout_hide_bar(layout,group):
+    bar = qtile.current_screen.top
+    if(layout.name == 'treetab'):
+        bar.show(False)
+    elif(layout.name == 'max'):
+        bar.show(False)
+    else:
+        bar.show(True)
+
 @hook.subscribe.client_new
-def modify_window(client):
-    for group in groups:  # follow on auto-move
-        match = next((m for m in group.matches if m.compare(client)), None)
-        if match:
-            targetgroup = client.qtile.groups_map[group.name]  # there can be multiple instances of a group
-            targetgroup.cmd_toscreen(toggle=True)
-            break
+def set_floating(window):
+    if(window.window.get_name() == 'Spotify'):
+        window.floating = True
+    elif(window.window.get_name() == 'galculator'):
+        window.floating = True
+    #elif(window.window.get_name() == '*dashboard* - GNU Emacs at bastien-desktop'):
+    #    window.fullscreen = True
+
 
 # Hook to fallback to the first group with windows when last window of group is killed
 # Pb: it would fall to Scratchpad in the end, that I want to avoid 
@@ -138,38 +159,19 @@ def modify_window(client):
 def fallback(window):
     if window.group.windows != [window]:
         return
+    
     idx = qtile.groups.index(window.group)
     for group in qtile.groups[idx - 1::-1]:
         if group.windows:
             qtile.current_screen.toggle_group(group)
+            if qtile.current_screen.group.name == 'scratch':
+                qtile.current_screen.toggle_group("1")
             return
     qtile.current_screen.toggle_group(qtile.groups[0])
-
-
-@hook.subscribe.client_new
-def set_floating(window):
-    if(window.window.get_name() == 'Spotify'):
-        window.floating = True
-    elif(window.window.get_name() == 'Steam'):
-        window.floating = True
-    elif(window.window.get_name() == 'galculator'):
-        window.floating = True
-    elif(window.window.get_name() == 'bastien'):
-        window.floating = True
-
-
-# If things like steam games want to auto-minimize themselves when losing
-# focus, should we respect this or not?
-auto_minimize = True
-
-# When using the Wayland backend, this can be used to configure input devices.
-wl_input_rules = None
-
 
 @hook.subscribe.startup_once
 def autostart():
 	subprocess.run('/home/bastien/.config/qtile/autostart.sh')
-
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the

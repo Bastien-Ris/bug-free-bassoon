@@ -9,7 +9,7 @@ wal -R &
 picom -b &
 redshift &
 clipmenud &
-emacs --daemon & 
+#emacs --daemon & ## not necessary, depending on how often I use emacs
 pcmanfm -d &
 #volumeicon &
 #birdtray &
